@@ -33,106 +33,183 @@ describe Rinkusukurepa::Scraper do
     it { expect(scraper).to respond_to(:get_page_type) }
   end
 
-  context 'regression' do
-    subject { scraper.parse_url }
+  describe 'regression', regression_check: true do
+    describe 'per method', regression: 'per_method' do
+      subject { scraper.parse_url }
 
-    context 'scraper' do
-      it { expect(subject).not_to be_nil }
-      it { expect(subject).to be_a(Rinkusukurepa::Scraper) }
+      context 'scraper' do
+        it { expect(subject).not_to be_nil }
+        it { expect(subject).to be_a(Rinkusukurepa::Scraper) }
+
+        context '@page_document' do
+          it { expect(subject.page_document).not_to be_nil }
+          it { expect(subject.page_document).to be_a(Nokogiri::HTML::Document) }
+        end
+      end
+
+      context '#get_icon' do
+        it { expect(subject.get_icon).not_to be_nil }
+        it { expect(subject.get_icon).to be_a(String) }
+        it { expect(URI.parse(subject.get_icon)).to be_a(URI) }
+
+        context '@icon' do
+          before { subject.get_icon }
+          it { expect(subject.icon).to be_a(String) }
+          it { expect(URI.parse(subject.icon)).to be_a(URI) }
+          it { expect(subject.icon).not_to be_nil }
+        end
+      end
+
+      context '#get_title' do
+        it { expect(subject.get_title).not_to be_nil }
+        it { expect(subject.get_title).to be_a(String) }
+
+        context '@title' do
+          before { subject.get_title }
+          it { expect(subject.title).to be_a(String) }
+          it { expect(subject.title).not_to be_nil }
+        end
+      end
+
+      context '#get_description' do
+        it { expect(subject.get_description).not_to be_nil }
+        it { expect(subject.get_description).to be_a(String) }
+
+        context '@description' do
+          before { subject.get_description }
+          it { expect(subject.description).to be_a(String) }
+          it { expect(subject.description).not_to be_nil }
+        end
+      end
+
+      context '#get_images' do
+        it { expect(subject.get_images).not_to be_nil }
+        it { expect(subject.get_images).to be_a(Array) }
+        it { expect(subject.get_images).not_to be_empty }
+
+        context '@images' do
+          before { subject.get_images }
+          it { expect(subject.images).not_to be_nil }
+          it { expect(subject.images).to be_a(Array) }
+          it { expect(subject.images).not_to be_empty }
+        end
+      end
+
+      context '#get_site_name' do
+        it { expect(subject.get_site_name).not_to be_nil }
+        it { expect(subject.get_site_name).to be_a(String) }
+
+        context '@site_name' do
+          before { subject.get_site_name }
+          it { expect(subject.site_name).to be_a(String) }
+          it { expect(subject.site_name).not_to be_nil }
+        end
+      end
+
+      context '#get_video' do
+        context 'url link without video' do
+          it { expect(subject.get_video).to be_nil }
+
+          context '@video' do
+            before { subject.get_video }
+            it { expect(subject.video).to be_nil }
+          end
+        end
+
+        context 'url link with video' do
+          let(:url_with_video) { 'https://www.youtube.com/watch?v=GY7Ps8fqGdc' }
+          let(:scraper_with_video) { Rinkusukurepa.new(url_with_video).parse_url }
+
+          it { expect(scraper_with_video.get_video).to be_a(String) }
+          it { expect(scraper_with_video.get_video).not_to be_nil }
+          it { expect(URI.parse(scraper_with_video.get_video)).to be_a(URI) }
+        end
+      end
+
+      context '#get_page_type' do
+        it { expect(subject.get_page_type).not_to be_nil }
+        it { expect(subject.get_page_type).to be_a(String) }
+
+        context '@page_type' do
+          before { subject.get_page_type }
+          it { expect(subject.page_type).to be_a(String) }
+          it { expect(subject.page_type).not_to be_nil }
+        end
+      end
+    end
+
+    describe 'as one request', regression: 'as_one_request' do
+      subject { Rinkusukurepa.parse_url!(url) }
 
       context '@page_document' do
         it { expect(subject.page_document).not_to be_nil }
         it { expect(subject.page_document).to be_a(Nokogiri::HTML::Document) }
       end
-    end
-
-    context '#get_icon' do
-      it { expect(subject.get_icon).not_to be_nil }
-      it { expect(subject.get_icon).to be_a(String) }
-      it { expect(URI.parse(subject.get_icon)).to be_a(URI) }
 
       context '@icon' do
-        before { subject.get_icon }
         it { expect(subject.icon).to be_a(String) }
         it { expect(URI.parse(subject.icon)).to be_a(URI) }
         it { expect(subject.icon).not_to be_nil }
       end
-    end
-
-    context '#get_title' do
-      it { expect(subject.get_title).not_to be_nil }
-      it { expect(subject.get_title).to be_a(String) }
 
       context '@title' do
-        before { subject.get_title }
         it { expect(subject.title).to be_a(String) }
         it { expect(subject.title).not_to be_nil }
       end
-    end
-
-    context '#get_description' do
-      it { expect(subject.get_description).not_to be_nil }
-      it { expect(subject.get_description).to be_a(String) }
 
       context '@description' do
-        before { subject.get_description }
         it { expect(subject.description).to be_a(String) }
         it { expect(subject.description).not_to be_nil }
       end
-    end
-
-    context '#get_images' do
-      it { expect(subject.get_images).not_to be_nil }
-      it { expect(subject.get_images).to be_a(Array) }
-      it { expect(subject.get_images).not_to be_empty }
 
       context '@images' do
-        before { subject.get_images }
         it { expect(subject.images).not_to be_nil }
         it { expect(subject.images).to be_a(Array) }
         it { expect(subject.images).not_to be_empty }
       end
-    end
-
-    context '#get_site_name' do
-      it { expect(subject.get_site_name).not_to be_nil }
-      it { expect(subject.get_site_name).to be_a(String) }
 
       context '@site_name' do
-        before { subject.get_site_name }
         it { expect(subject.site_name).to be_a(String) }
         it { expect(subject.site_name).not_to be_nil }
       end
-    end
-
-    context '#get_video' do
-      context 'url link without video' do
-        it { expect(subject.get_video).to be_nil }
-
-        context '@video' do
-          before { subject.get_video }
-          it { expect(subject.video).to be_nil }
-        end
-      end
-
-      context 'url link with video' do
-        let(:url_with_video) { 'https://www.youtube.com/watch?v=GY7Ps8fqGdc' }
-        let(:scraper_with_video) { Rinkusukurepa.new(url_with_video).parse_url }
-
-        it { expect(scraper_with_video.get_video).to be_a(String) }
-        it { expect(scraper_with_video.get_video).not_to be_nil }
-        it { expect(URI.parse(scraper_with_video.get_video)).to be_a(URI) }
-      end
-    end
-
-    context '#get_page_type' do
-      it { expect(subject.get_page_type).not_to be_nil }
-      it { expect(subject.get_page_type).to be_a(String) }
 
       context '@page_type' do
-        before { subject.get_page_type }
         it { expect(subject.page_type).to be_a(String) }
         it { expect(subject.page_type).not_to be_nil }
+      end
+
+      context 'attributes' do
+        it { expect(subject.attributes).to be_a(Hash) }
+
+        context 'icon' do
+          it { expect(subject.attributes[:icon]).not_to be_nil }
+          it { expect(subject.attributes[:icon]).to be_a(String) }
+        end
+
+        context 'title' do
+          it { expect(subject.attributes[:title]).not_to be_nil }
+          it { expect(subject.attributes[:title]).to be_a(String) }
+        end
+
+        context 'description' do
+          it { expect(subject.attributes[:description]).not_to be_nil }
+          it { expect(subject.attributes[:description]).to be_a(String) }
+        end
+
+        context 'images' do
+          it { expect(subject.attributes[:images]).not_to be_nil }
+          it { expect(subject.attributes[:images]).to be_a(Array) }
+        end
+
+        context 'site_name' do
+          it { expect(subject.attributes[:site_name]).not_to be_nil }
+          it { expect(subject.attributes[:site_name]).to be_a(String) }
+        end
+
+        context 'page_type' do
+          it { expect(subject.attributes[:page_type]).not_to be_nil }
+          it { expect(subject.attributes[:page_type]).to be_a(String) }
+        end
       end
     end
   end

@@ -19,11 +19,11 @@ module Rinkusukurepa
       :page_document
 
     Rinkusukurepa.page_types.each do |type|
-      define_method "#{type.downcase}?" do
+      define_method "#{type.downcase.strip.gsub(/[^0-9A-Za-z]/, '')}?" do
         self.type == type
       end
 
-      define_singleton_method "#{type.downcase}" do
+      define_singleton_method "#{type.downcase.strip.gsub(/[^0-9A-Za-z]/, '')}" do
         type
       end
     end
