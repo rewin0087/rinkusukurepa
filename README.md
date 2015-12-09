@@ -34,13 +34,13 @@ Or install it yourself as:
 
     web_page = Rinkusukurepa.new('https://github.com/rewin0087/rinkusukurepa')
     web_page.parse_url # it will scrape and return the document of the url
-    web_page.get_icon  # it will find the icon from the document and return the icon
-    web_page.get_title # it will find the title from the document and return the title
-    web_page.get_description # it will find the description from the document and return the description
-    web_page.get_images # it will find the images from the document and return the images
-    web_page.get_site_name # it will find the site name from the document and return the site name
-    web_page.get_video # it will find the video from the document and return the video
-    web_page.get_page_type # it will find the page type from the document and return the page type
+    web_page.get_icon  # it will find the icon from the document and return the icon (@icon is now set)
+    web_page.get_title # it will find the title from the document and return the title (@title is now set)
+    web_page.get_description # it will find the description from the document and return the description (@description is now set)
+    web_page.get_images # it will find the images from the document and return the images (@images are now set)
+    web_page.get_site_name # it will find the site name from the document and return the site name (@site_name is now set)
+    web_page.get_video # it will find the video from the document and return the video (@video is now set)
+    web_page.get_page_type # it will find the page type from the document and return the page type (@page_type is now set)
 
     To customize some of the configurations
     create a file in the config/initializers/rinkusukurepa.rb
